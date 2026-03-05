@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* #FF073D → HSL ≈ 349 100 50 */
+    --background: 225 15% 7%;
+    --foreground: 210 17% 82%;
+
+    --card: 225 12% 10%;
+    --card-foreground: 210 17% 82%;
+
+    --popover: 225 15% 9%;
+    --popover-foreground: 210 17% 82%;
+
+    --primary: 349 100% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 225 10% 16%;
+    --secondary-foreground: 210 17% 82%;
+
+    --muted: 225 10% 14%;
+    --muted-foreground: 215 14% 55%;
+
+    --accent: 225 10% 18%;
+    --accent-foreground: 210 17% 82%;
+
+    --destructive: 349 84% 48%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 225 10% 20%;
+    --input: 225 10% 14%;
+    --ring: 349 100% 50%;
+
+    --radius: 0.6rem;
+  }
+
+  * {
+    border-color: hsl(var(--border));
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+
+.AccordionContent {
+  overflow: hidden;
+}
+.AccordionContent[data-state="closed"] {
+  display: none;
+}
+.AccordionContent[data-state="open"] {
+  display: block;
+}

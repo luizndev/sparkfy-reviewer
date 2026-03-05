@@ -1,18 +1,27 @@
 {
-  "name": "sparked-reviewer",
-  "displayName": "Sparked reviewer",
+  "name": "sparkfy-reviewer",
+  "displayName": "Sparkfy Reviewer",
   "version": "0.0.1",
-  "description": "A basic Plasmo extension.",
-  "author": "Plasmo Corp. <foss@plasmo.com>",
+  "description": "AI Code Review for GitHub and GitLab using Gemini Pro.",
+  "author": "LuiznDev",
   "scripts": {
     "dev": "plasmo dev",
     "build": "plasmo build",
     "package": "plasmo package"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.2.1",
+    "@radix-ui/react-accordion": "^1.2.12",
+    "@radix-ui/react-label": "^2.1.8",
+    "@radix-ui/react-select": "^2.2.6",
+    "@radix-ui/react-slot": "^1.2.4",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.577.0",
     "plasmo": "0.90.5",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "4.1.1",
@@ -20,12 +29,25 @@
     "@types/node": "20.11.5",
     "@types/react": "18.2.48",
     "@types/react-dom": "18.2.18",
+    "autoprefixer": "^10.4.27",
+    "postcss": "^8.5.8",
     "prettier": "3.2.4",
+    "tailwindcss": "^3.4.19",
     "typescript": "5.3.3"
   },
   "manifest": {
+    "permissions": [
+      "storage",
+      "activeTab",
+      "scripting",
+      "tabs"
+    ],
     "host_permissions": [
-      "https://*/*"
+      "https://github.com/*",
+      "https://gitlab.com/*",
+      "https://generativelanguage.googleapis.com/*",
+      "https://api.openai.com/*",
+      "https://api.anthropic.com/*"
     ]
   }
 }
