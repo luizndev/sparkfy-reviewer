@@ -1,33 +1,104 @@
-This is a [Plasmo extension](https://docs.plasmo.com/) project bootstrapped with [`plasmo init`](https://www.npmjs.com/package/plasmo).
+![Sparkfy Reviewer Banner](https://i.imgur.com/GNwDAyo.jpeg)
 
-## Getting Started
+O Sparkfy Reviewer é uma extensão de navegador especializada, projetada para aprimorar o processo de revisão de código no GitHub e GitLab utilizando Inteligência Artificial avançada. Ao integrar modelos de linguagem de grande escala diretamente nos fluxos de trabalho de Pull Request e Merge Request, ele fornece feedback automatizado de alta qualidade baseado em boas práticas da indústria.
 
-First, run the development server:
+---
 
-```bash
-pnpm dev
-# or
-npm run dev
-```
+## Principais Funcionalidades
 
-Open your browser and load the appropriate development build. For example, if you are developing for the chrome browser, using manifest v3, use: `build/chrome-mv3-dev`.
+- **Suporte a Múltiplos Provedores de IA**: Integração com Google Gemini Pro, OpenAI GPT e Anthropic Claude.
+- **Integração de Plataforma**: Funciona perfeitamente com GitHub Pull Requests e GitLab Merge Requests.
+- **Análise Customizável**: Permite definir instruções específicas de revisão (Clean Code, SOLID, Segurança, Performance, etc.).
+- **Suporte Multilíngue**: Feedback disponível em Inglês e Português.
+- **Foco em Privacidade**: As chaves de API são armazenadas localmente no armazenamento seguro do navegador.
 
-You can start editing the popup by modifying `popup.tsx`. It should auto-update as you make changes. To add an options page, simply add a `options.tsx` file to the root of the project, with a react component default exported. Likewise to add a content page, add a `content.ts` file to the root of the project, importing some module and do some logic, then reload the extension on your browser.
+---
 
-For further guidance, [visit our Documentation](https://docs.plasmo.com/)
+## Requisitos Técnicos
 
-## Making production build
+- Node.js (v18 ou superior)
+- PNPM, NPM ou Yarn
+- Framework Plasmo
+- Chave de API válida para um dos provedores de IA suportados
 
-Run the following:
+---
 
-```bash
-pnpm build
-# or
-npm run build
-```
+## Configuração do Ambiente de Desenvolvimento
 
-This should create a production bundle for your extension, ready to be zipped and published to the stores.
+Siga os passos abaixo para configurar o ambiente de projeto para desenvolvimento:
 
-## Submit to the webstores
+1. **Clonar o repositório**:
 
-The easiest way to deploy your Plasmo extension is to use the built-in [bpp](https://bpp.browser.market) GitHub action. Prior to using this action however, make sure to build your extension and upload the first version to the store to establish the basic credentials. Then, simply follow [this setup instruction](https://docs.plasmo.com/framework/workflows/submit) and you should be on your way for automated submission!
+   ```bash
+   git clone <repository-url>
+   cd sparkfy-reviewer
+   ```
+
+2. **Instalar dependências**:
+
+   ```bash
+   npm install
+   # ou
+   pnpm install
+   ```
+
+3. **Iniciar o servidor de desenvolvimento**:
+   ```bash
+   npm run dev
+   # ou
+   pnpm dev
+   ```
+
+O servidor de desenvolvimento monitorará as alterações e reconstruirá a extensão automaticamente.
+
+---
+
+## Instalação da Extensão no Chrome
+
+Para instalar a extensão no Google Chrome a partir do código-fonte:
+
+1. **Gerar a versão de desenvolvimento**:
+
+   ```bash
+   npm run dev
+   ```
+
+   Isso criará uma pasta de build em `build/chrome-mv3-dev`.
+
+2. Abra o Chrome e acesse `chrome://extensions/`.
+3. Ative o **Modo do desenvolvedor** no canto superior direito.
+4. Clique em **Carga descompactada** (Load unpacked).
+5. Selecione a pasta `build/chrome-mv3-dev` no diretório do seu projeto.
+
+---
+
+## Guia de Configuração
+
+Após a instalação, siga estes passos para configurar a extensão:
+
+1. Clique no ícone do Sparkfy Reviewer na barra de ferramentas de extensões do seu navegador.
+2. Selecione o seu **Provedor de IA** preferido (ex: Gemini).
+3. Insira sua **Chave de API** para o provedor selecionado.
+4. (Opcional) Personalize as **Instruções de Revisão** para focar em aspectos específicos de qualidade de código.
+5. Selecione o seu **Idioma de Saída** preferido.
+
+---
+
+## Uso
+
+Ao visualizar um Pull Request no GitHub ou um Merge Request no GitLab, um botão "Run AI Review" aparecerá nas ações do cabeçalho. Ao clicar neste botão, a IA analisará as alterações de código e exibirá o feedback da revisão diretamente na página em uma interface de acordeão estruturada.
+
+---
+
+## Como Contribuir
+
+Contribuições são muito bem-vindas! Se você deseja adicionar novas funcionalidades ou melhorias à ferramenta, siga os passos abaixo:
+
+1. **Clone o projeto** para o seu ambiente local.
+2. **Crie uma nova branch** para a sua feature (`git checkout -b feature/nova-funcionalidade`).
+3. **Desenvolva as alterações** seguindo os padrões de código do projeto.
+4. **Abra um Pull Request** detalhando as mudanças realizadas e o propósito da nova funcionalidade.
+
+---
+
+_Desenvolvido por LuiznDev._

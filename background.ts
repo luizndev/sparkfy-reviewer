@@ -5,6 +5,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const { diff, apiKey, instructions, provider, language } = message.payload
 
 
+    if (sender.tab?.id) {
+      chrome.scripting.executeScript({
+        target: { tabId: sender.tab.id },
+        func: () => {
+        }
+      })
+    }
+
     reviewCode(apiKey, diff, instructions, provider, language)
       .then((review) => {
         sendResponse({ success: true, review })
