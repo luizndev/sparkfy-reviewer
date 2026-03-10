@@ -101,4 +101,4 @@ Contribuições são muito bem-vindas! Se você deseja adicionar novas funcional
 
 ---
 
-_Desenvolvido por LuiznDev._
+_Desenvolvido por LuiznDev. ._
