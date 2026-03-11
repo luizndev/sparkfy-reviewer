@@ -3,10 +3,11 @@ import { cn } from "~lib/utils"
 const PROVIDERS = [
   { value: "gemini" as const, label: "Gemini" },
   { value: "openai" as const, label: "OpenAI" },
-  { value: "claude" as const, label: "Claude" }
+  { value: "claude" as const, label: "Claude" },
+  { value: "openrouter" as const, label: "OpenRouter" }
 ]
 
-export type ProviderValue = "gemini" | "openai" | "claude"
+export type ProviderValue = "gemini" | "openai" | "claude" | "openrouter"
 
 export const ProviderTabs = ({
   value,
@@ -22,7 +23,7 @@ export const ProviderTabs = ({
       <span className="text-[11px] uppercase tracking-wider text-muted-foreground">
         {label}
       </span>
-      <div className="grid grid-cols-3 gap-1 bg-secondary p-1 rounded-lg">
+      <div className="grid grid-cols-4 gap-1 bg-secondary p-1 rounded-lg">
         {PROVIDERS.map((p) => (
           <button
             key={p.value}

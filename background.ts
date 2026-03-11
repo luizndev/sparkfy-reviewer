@@ -2,18 +2,9 @@ import { reviewCode } from "./services/ai"
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "RUN_REVIEW") {
-    const { diff, apiKey, instructions, provider, language } = message.payload
+    const { diff, apiKey, instructions, provider, language, modelName } = message.payload
 
-
-    if (sender.tab?.id) {
-      chrome.scripting.executeScript({
-        target: { tabId: sender.tab.id },
-        func: () => {
-        }
-      })
-    }
-
-    reviewCode(apiKey, diff, instructions, provider, language)
+    reviewCode(apiKey, diff, instructions, provider, language, modelName)
       .then((review) => {
         sendResponse({ success: true, review })
       })

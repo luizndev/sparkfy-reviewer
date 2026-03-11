@@ -27,34 +27,27 @@ export const getGitHubDiff = (): string => {
     }
     fileName = fileName || `Unknown File ${index + 1}`
 
-    const rows = block.querySelectorAll('tr.diff-line-row, tr, .js-file-line-container .js-file-line')
+    const rows = block.querySelectorAll('tr.diff-line-row, .js-file-line-container .js-file-line')
     let fileDiff = ""
 
     rows.forEach(row => {
-      const isAddition =
-        row.querySelector('.addition') ||
-        row.classList.contains('blob-code-addition') ||
-        row.querySelector('.blob-code-addition') ||
-        row.querySelector('.diff-text-marker')?.textContent === "+"
+      const textElement = row.querySelector('.diff-text-inner') || row.querySelector('.blob-code-inner') || row
+      let text = (textElement as HTMLElement).innerText || ""
+      
+      const isAddition = row.querySelector('.addition') || row.classList.contains('blob-code-addition')
+      const isDeletion = row.querySelector('.deletion') || row.classList.contains('blob-code-deletion')
 
-      const isDeletion =
-        row.querySelector('.deletion') ||
-        row.classList.contains('blob-code-deletion') ||
-        row.querySelector('.blob-code-deletion') ||
-        row.querySelector('.diff-text-marker')?.textContent === "-"
-
-      if (isAddition || isDeletion) {
-        const textElement = row.querySelector('.diff-text-inner') || row.querySelector('.blob-code-inner') || row
-        let text = (textElement as HTMLElement).innerText || ""
-        text = text.replace(/^[\s+-]+/, "")
-
-        if (text.trim()) {
-          fileDiff += (isAddition ? "+ " : "- ") + text + "\n"
-        }
+      if (isAddition) {
+        fileDiff += "+ " + text.replace(/^\+/, "") + "\n"
+      } else if (isDeletion) {
+        fileDiff += "- " + text.replace(/^-/, "") + "\n"
+      } else {
+        fileDiff += "  " + text + "\n"
       }
     })
 
     if (fileDiff) {
+      console.log(`[Sparkfy] Captured code for ${fileName}:`, fileDiff)
       fullDiff += `FILE: ${fileName}\n`
       fullDiff += fileDiff
       fullDiff += "--------------------------------------------------\n\n"

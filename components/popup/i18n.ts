@@ -17,7 +17,11 @@ export const i18n = {
     analyzing: "Analyzing code changes...",
     reviewCompleted: "Review completed! Improvements added to the diff below.",
     suggestions: "Suggestions",
-    line: "Line"
+    line: "Line",
+    tabReviewer: "Reviewer",
+    tabConfig: "Configuration",
+    model: "AI Model",
+    openrouter: "OpenRouter"
   },
   pt: {
     title: "Reviewer",
@@ -37,7 +41,11 @@ export const i18n = {
     analyzing: "Analisando mudanças de código...",
     reviewCompleted: "Revisão concluída! Melhorias adicionadas ao diff abaixo.",
     suggestions: "Sugestões",
-    line: "Linha"
+    line: "Linha",
+    tabReviewer: "Revisor",
+    tabConfig: "Configuração",
+    model: "Modelo de IA",
+    openrouter: "OpenRouter"
   },
   es: {
     title: "Reviewer",
@@ -57,7 +65,11 @@ export const i18n = {
     analyzing: "Analizando cambios de código...",
     reviewCompleted: "¡Revisión completada! Mejoras añadidas al diff debajo.",
     suggestions: "Sugerencias",
-    line: "Línea"
+    line: "Línea",
+    tabReviewer: "Revisor",
+    tabConfig: "Configuración",
+    model: "Modelo de IA",
+    openrouter: "OpenRouter"
   }
 }
 

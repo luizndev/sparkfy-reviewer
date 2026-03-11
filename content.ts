@@ -66,9 +66,10 @@ const startAIReview = (): void => {
     return
   }
 
-  chrome.storage.local.get(["aiProvider", "apiKeys", "reviewInstructions", "language"], (result) => {
-    const { aiProvider = "gemini", apiKeys = {}, reviewInstructions, language = "pt" } = result
+  chrome.storage.local.get(["aiProvider", "apiKeys", "apiModels", "reviewInstructions", "language"], (result) => {
+    const { aiProvider = "gemini", apiKeys = {}, apiModels = {}, reviewInstructions, language = "pt" } = result
     const apiKey = apiKeys[aiProvider]
+    const modelName = apiModels[aiProvider]
 
     if (!apiKey) {
       alert(`Please set your ${aiProvider.toUpperCase()} API Key in the Sparkfy Reviewer extension popup.`)
@@ -84,8 +85,6 @@ const startAIReview = (): void => {
 
     const finalInstructions = reviewInstructions || "Analyze the code for Clean Code, SOLID, Typescript Strict, Security and Performance."
 
-  
-
     injectReviewBox("Analyzing code changes with " + aiProvider + "...", true)
 
     chrome.runtime.sendMessage(
@@ -96,7 +95,8 @@ const startAIReview = (): void => {
           apiKey,
           instructions: finalInstructions,
           provider: aiProvider,
-          language
+          language,
+          modelName
         }
       },
       (response) => {

@@ -4,52 +4,78 @@
 
 @layer base {
   :root {
-    /* #FF073D → HSL ≈ 349 100 50 */
-    --background: 225 15% 7%;
-    --foreground: 210 17% 82%;
-
-    --card: 225 12% 10%;
-    --card-foreground: 210 17% 82%;
-
-    --popover: 225 15% 9%;
-    --popover-foreground: 210 17% 82%;
-
+    --background: 0 0% 100%;
+    --foreground: 225 15% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 225 15% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 225 15% 10%;
     --primary: 349 100% 50%;
     --primary-foreground: 0 0% 100%;
-
-    --secondary: 225 10% 16%;
-    --secondary-foreground: 210 17% 82%;
-
-    --muted: 225 10% 14%;
-    --muted-foreground: 215 14% 55%;
-
-    --accent: 225 10% 18%;
-    --accent-foreground: 210 17% 82%;
-
+    --secondary: 225 10% 96%;
+    --secondary-foreground: 225 15% 15%;
+    --muted: 225 10% 96%;
+    --muted-foreground: 215 14% 40%;
+    --accent: 225 10% 92%;
+    --accent-foreground: 225 15% 15%;
     --destructive: 349 84% 48%;
     --destructive-foreground: 0 0% 100%;
+    --border: 225 10% 90%;
+    --input: 225 10% 96%;
+    --ring: 349 100% 50%;
+    --radius: 0.9rem;
+  }
 
+  .dark {
+    --background: 225 15% 7%;
+    --foreground: 210 17% 82%;
+    --card: 225 12% 10%;
+    --card-foreground: 210 17% 82%;
+    --popover: 225 15% 9%;
+    --popover-foreground: 210 17% 82%;
+    --primary: 349 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 225 10% 16%;
+    --secondary-foreground: 210 17% 82%;
+    --muted: 225 10% 14%;
+    --muted-foreground: 215 14% 55%;
+    --accent: 225 10% 18%;
+    --accent-foreground: 210 17% 82%;
+    --destructive: 349 84% 48%;
+    --destructive-foreground: 0 0% 100%;
     --border: 225 10% 20%;
     --input: 225 10% 14%;
     --ring: 349 100% 50%;
-
-    --radius: 0.6rem;
   }
 
   * {
     border-color: hsl(var(--border));
     box-sizing: border-box;
+    scrollbar-width: none !important;
+    user-select: none;
   }
 
-  body {
+  input, textarea, [contenteditable="true"] {
+    user-select: text;
+  }
+
+  html, body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     margin: 0;
     padding: 0;
+    width: 320px !important;
+    max-width: 320px !important;
+    overflow: hidden;
+  }
+
+  ::-webkit-scrollbar {
+    width: 0px !important;
+    height: 0px !important;
+    display: none !important;
   }
 }
-
 
 .AccordionContent {
   overflow: hidden;
