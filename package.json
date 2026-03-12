@@ -39,9 +39,7 @@
   "manifest": {
     "permissions": [
       "storage",
-      "activeTab",
-      "scripting",
-      "tabs"
+      "activeTab"
     ],
     "host_permissions": [
       "https://github.com/*",
