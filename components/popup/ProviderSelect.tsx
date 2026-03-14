@@ -7,16 +7,10 @@ import {
   SelectTrigger,
   SelectValue
 } from "~components/ui/select"
+import { AI_PROVIDERS } from "~constants/ai-providers"
 import { useProviderIcon, type ProviderIconName } from "~hooks/useProviderIcon"
 
-const PROVIDERS: { value: ProviderIconName; label: string }[] = [
-  { value: "gemini", label: "Gemini" },
-  { value: "openai", label: "OpenAI" },
-  { value: "claude", label: "Claude" },
-  { value: "openrouter", label: "OpenRouter" }
-]
-
-export type ProviderValue = ProviderIconName
+export type ProviderValue = (typeof AI_PROVIDERS)[number]["value"]
 
 interface ProviderSelectProps {
   value: ProviderValue
@@ -24,34 +18,36 @@ interface ProviderSelectProps {
   label: string
 }
 
-const ProviderItemIcon = ({ name }: { name: ProviderIconName }) => {
+function ProviderItemIcon({ name }: { name: ProviderIconName }) {
   const { getIcon } = useProviderIcon(name)
   return getIcon("w-4 h-4 text-foreground")
 }
 
-export const ProviderSelect = ({
-  value,
+export function ProviderSelect({
+  value = "google",
   onChange,
   label
-}: ProviderSelectProps) => {
+}: ProviderSelectProps) {
   return (
     <div className="space-y-1.5">
       <span className="text-[11px] uppercase tracking-wider text-muted-foreground">
         {label}
       </span>
-      <Select value={value} onValueChange={(v) => onChange(v as ProviderValue)}>
+      <Select
+        value={value}
+        onValueChange={(value) => onChange(value as ProviderValue)}>
         <SelectTrigger className="w-full bg-muted/50 border-border rounded-md px-3 py-2 text-[12px] font-medium outline-none h-10 shadow-none">
           <SelectValue placeholder="Select Provider" />
         </SelectTrigger>
         <SelectContent className="bg-muted/50 border-border border backdrop-blur-md">
-          {PROVIDERS.map((p) => (
+          {AI_PROVIDERS.map((provider) => (
             <SelectItem
-              key={p.value}
-              value={p.value}
+              key={provider.value}
+              value={provider.value}
               className="text-[12px] cursor-pointer">
               <div className="flex items-center gap-2">
-                <ProviderItemIcon name={p.value} />
-                <span className="text-foreground">{p.label}</span>
+                <ProviderItemIcon name={provider.value} />
+                <span className="text-foreground">{provider.label}</span>
               </div>
             </SelectItem>
           ))}

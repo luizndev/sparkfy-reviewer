@@ -1,40 +1,32 @@
+import { AI_PROVIDERS } from "~constants/ai-providers"
 import { cn } from "~lib/utils"
 
-const PROVIDERS = [
-  { value: "gemini" as const, label: "Gemini" },
-  { value: "openai" as const, label: "OpenAI" },
-  { value: "claude" as const, label: "Claude" },
-  { value: "openrouter" as const, label: "OpenRouter" }
-]
+export type ProviderValue = (typeof AI_PROVIDERS)[number]["value"]
 
-export type ProviderValue = "gemini" | "openai" | "claude" | "openrouter"
-
-export const ProviderTabs = ({
-  value,
-  onChange,
-  label
-}: {
+type ProviderTabsProps = {
   value: ProviderValue
-  onChange: (v: ProviderValue) => void
+  onChange: (value: ProviderValue) => void
   label: string
-}) => {
+}
+
+export const ProviderTabs = ({ value, onChange, label }: ProviderTabsProps) => {
   return (
     <div className="space-y-1.5">
       <span className="text-[11px] uppercase tracking-wider text-muted-foreground">
         {label}
       </span>
       <div className="grid grid-cols-4 gap-1 bg-secondary p-1 rounded-lg">
-        {PROVIDERS.map((p) => (
+        {AI_PROVIDERS.map((provider) => (
           <button
-            key={p.value}
-            onClick={() => onChange(p.value)}
+            key={provider.value}
+            onClick={() => onChange(provider.value)}
             className={cn(
               "py-1.5 rounded-md text-[11px] font-semibold transition-all",
-              value === p.value
+              value === provider.value
                 ? "bg-primary text-primary-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
             )}>
-            {p.label}
+            {provider.label}
           </button>
         ))}
       </div>
