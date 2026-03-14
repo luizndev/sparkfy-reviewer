@@ -6,15 +6,21 @@ import {
   type MODELS_BY_PROVIDER
 } from "~components/ui/ModelSelect"
 import { Textarea } from "~components/ui/textarea"
+import { ProfileSelector } from "~components/popup/ProfileSelector"
+import type { ReviewProfile } from "~constants/review-profiles"
 
 interface SettingsFormsProps {
   provider: keyof typeof MODELS_BY_PROVIDER
   apiKey: string
   model: string
   instructions: string
+  selectedProfileId: string
+  customProfiles: ReviewProfile[]
   onApiKeyChange: (key: string) => void
   onModelChange: (model: string) => void
   onInstructionsChange: (instr: string) => void
+  onSelectProfile: (profile: ReviewProfile) => void
+  onDeleteCustomProfile?: (profileId: string) => void
   onSave: () => void
   labels: {
     apiKey: string
@@ -23,6 +29,7 @@ interface SettingsFormsProps {
     instructionsPlaceholder: string
     save: string
     model: string
+    profile?: string
   }
 }
 
@@ -31,9 +38,13 @@ export const SettingsForms = ({
   apiKey,
   model,
   instructions,
+  selectedProfileId,
+  customProfiles,
   onApiKeyChange,
   onModelChange,
   onInstructionsChange,
+  onSelectProfile,
+  onDeleteCustomProfile,
   onSave,
   labels
 }: SettingsFormsProps) => {
@@ -58,6 +69,14 @@ export const SettingsForms = ({
           className="bg-muted/50"
         />
       </div>
+
+      <ProfileSelector
+        selectedProfileId={selectedProfileId}
+        onSelectProfile={onSelectProfile}
+        customProfiles={customProfiles}
+        onDeleteCustomProfile={onDeleteCustomProfile}
+        label={labels.profile || "Review Profile"}
+      />
 
       <div className="space-y-1.5">
         <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">

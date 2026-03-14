@@ -6,10 +6,12 @@ O Sparkfy Reviewer é uma extensão de navegador especializada, projetada para a
 
 ## Principais Funcionalidades
 
-- **Suporte a Múltiplos Provedores de IA**: Integração com Google Gemini Pro, OpenAI GPT e Anthropic Claude.
+- **Suporte a Múltiplos Provedores de IA**: Integração com Google Gemini Pro, OpenAI GPT, Anthropic Claude e OpenRouter.
 - **Integração de Plataforma**: Funciona perfeitamente com GitHub Pull Requests e GitLab Merge Requests.
-- **Análise Customizável**: Permite definir instruções específicas de revisão (Clean Code, SOLID, Segurança, Performance, etc.).
-- **Suporte Multilíngue**: Feedback disponível em Inglês e Português.
+- **Profiles de Revisão Pré-configurados**: 8 profiles especializados incluindo Security Focus, Performance, React Best Practices, TypeScript Strict e mais.
+- **Sistema de Severidade**: Classificação automática de issues em CRITICAL, HIGH, MEDIUM, LOW e INFO com score de qualidade (0-100).
+- **Análise Customizável**: Permite definir instruções específicas de revisão e criar profiles customizados.
+- **Suporte Multilíngue**: Feedback disponível em Inglês, Português e Espanhol.
 - **Foco em Privacidade**: As chaves de API são armazenadas localmente no armazenamento seguro do navegador.
 
 ---
@@ -79,14 +81,26 @@ Após a instalação, siga estes passos para configurar a extensão:
 1. Clique no ícone do Sparkfy Reviewer na barra de ferramentas de extensões do seu navegador.
 2. Selecione o seu **Provedor de IA** preferido (ex: Gemini).
 3. Insira sua **Chave de API** para o provedor selecionado.
-4. (Opcional) Personalize as **Instruções de Revisão** para focar em aspectos específicos de qualidade de código.
+4. (Opcional) Escolha um **Profile de Revisão** pré-configurado ou customize suas próprias instruções:
+   - **General Review**: Análise completa com boas práticas gerais
+   - **Security Focus**: Vulnerabilidades e segurança
+   - **Performance Optimization**: Otimização e eficiência
+   - **Clean Code & SOLID**: Princípios de código limpo
+   - **React Best Practices**: Padrões específicos de React
+   - **TypeScript Strict**: Tipagem rigorosa
+   - **API & Backend**: Revisão de APIs e backend
+   - **Testing & Quality**: Cobertura e qualidade de testes
 5. Selecione o seu **Idioma de Saída** preferido.
 
 ---
 
 ## Uso
 
-Ao visualizar um Pull Request no GitHub ou um Merge Request no GitLab, um botão "Run AI Review" aparecerá nas ações do cabeçalho. Ao clicar neste botão, a IA analisará as alterações de código e exibirá o feedback da revisão diretamente na página em uma interface de acordeão estruturada.
+Ao visualizar um Pull Request no GitHub ou um Merge Request no GitLab, um botão "Run AI Review" aparecerá nas ações do cabeçalho. Ao clicar neste botão, a IA analisará as alterações de código e exibirá:
+
+- **Score de Qualidade**: Pontuação geral (0-100) baseado nos issues encontrados
+- **Issues por Severidade**: Classificados em CRITICAL 🔴, HIGH 🟠, MEDIUM 🟡, LOW 🟢 e INFO ℹ️
+- **Feedback Detalhado**: Para cada issue com contexto, problema, solução e código sugerido
 
 ---
 

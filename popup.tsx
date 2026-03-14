@@ -20,6 +20,7 @@ import { cn } from "~lib/utils"
 import "./styles/globals.css"
 
 import { AI_MODELS } from "~constants/ai-models"
+import { getDefaultProfile, type ReviewProfile } from "~constants/review-profiles"
 
 const IndexPopup = () => {
   const { logoUrl } = useLogo()
@@ -38,8 +39,10 @@ const IndexPopup = () => {
     anthropic: AI_MODELS.anthropic[0],
     openrouter: ""
   })
+  const [selectedProfileId, setSelectedProfileId] = useState<string>(getDefaultProfile().id)
+  const [customProfiles, setCustomProfiles] = useState<ReviewProfile[]>([])
   const [instructions, setInstructions] = useState(
-    "Analyze the code for Clean Code, SOLID, Typescript Strict, Security and Performance. Focused on Senior JS/TS Engineer persona."
+    getDefaultProfile().instructions
   )
   const [status, setStatus] = useState("")
   const [isRunning, setIsRunning] = useState(false)
@@ -54,7 +57,9 @@ const IndexPopup = () => {
           "apiKeys",
           "apiModels",
           "reviewInstructions",
-          "language"
+          "language",
+          "selectedProfileId",
+          "customProfiles"
         ],
         (result) => {
           if (result.aiProvider) setProvider(result.aiProvider)
@@ -63,6 +68,8 @@ const IndexPopup = () => {
           if (result.reviewInstructions)
             setInstructions(result.reviewInstructions)
           if (result.language) setLanguage(result.language)
+          if (result.selectedProfileId) setSelectedProfileId(result.selectedProfileId)
+          if (result.customProfiles) setCustomProfiles(result.customProfiles)
         }
       )
     }
@@ -76,13 +83,30 @@ const IndexPopup = () => {
           apiKeys: keys,
           apiModels: models,
           reviewInstructions: instructions,
-          language
+          language,
+          selectedProfileId,
+          customProfiles
         },
         () => {
           setStatus(t.saved)
           setTimeout(() => setStatus(""), 2000)
         }
       )
+    }
+  }
+
+  const handleSelectProfile = (profile: ReviewProfile) => {
+    setSelectedProfileId(profile.id)
+    setInstructions(profile.instructions)
+  }
+
+  const handleDeleteCustomProfile = (profileId: string) => {
+    const updatedProfiles = customProfiles.filter(p => p.id !== profileId)
+    setCustomProfiles(updatedProfiles)
+    if (selectedProfileId === profileId) {
+      const defaultProfile = getDefaultProfile()
+      setSelectedProfileId(defaultProfile.id)
+      setInstructions(defaultProfile.instructions)
     }
   }
 
@@ -216,6 +240,8 @@ const IndexPopup = () => {
               apiKey={keys[provider]}
               model={models[provider]}
               instructions={instructions}
+              selectedProfileId={selectedProfileId}
+              customProfiles={customProfiles}
               onApiKeyChange={(key) =>
                 setKeys((prev) => ({ ...prev, [provider]: key }))
               }
@@ -223,6 +249,8 @@ const IndexPopup = () => {
                 setModels((prev) => ({ ...prev, [provider]: model }))
               }
               onInstructionsChange={setInstructions}
+              onSelectProfile={handleSelectProfile}
+              onDeleteCustomProfile={handleDeleteCustomProfile}
               onSave={handleSave}
               labels={{
                 apiKey: t.apiKey,
@@ -230,7 +258,8 @@ const IndexPopup = () => {
                 instructions: t.instructions,
                 instructionsPlaceholder: t.instructionsPlaceholder,
                 save: t.save,
-                model: (t as any).model
+                model: (t as any).model,
+                profile: "Review Profile"
               }}
             />
           </div>
