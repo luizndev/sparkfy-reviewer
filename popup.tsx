@@ -18,22 +18,24 @@ import { cn } from "~lib/utils"
 
 import "./styles/globals.css"
 
+import { AI_MODELS } from "~constants/ai-models"
+
 const IndexPopup = () => {
   const { logoUrl } = useLogo()
   const [activeTab, setActiveTab] = useState<"reviewer" | "config">("reviewer")
-  const [provider, setProvider] = useState<ProviderValue>("gemini")
+  const [provider, setProvider] = useState<ProviderValue>("google")
   const [language, setLanguage] = useState<LangValue>("pt")
   const [keys, setKeys] = useState({
-    gemini: "",
+    google: "",
     openai: "",
-    claude: "",
+    anthropic: "",
     openrouter: ""
   })
   const [models, setModels] = useState({
-    gemini: "gemini-1.5-pro",
-    openai: "gpt-4o",
-    claude: "claude-3-5-sonnet-20240620",
-    openrouter: "meta-llama/llama-3-70b-instruct"
+    google: AI_MODELS.google[0],
+    openai: AI_MODELS.openai[0],
+    anthropic: AI_MODELS.anthropic[0],
+    openrouter: ""
   })
   const [instructions, setInstructions] = useState(
     "Analyze the code for Clean Code, SOLID, Typescript Strict, Security and Performance. Focused on Senior JS/TS Engineer persona."
