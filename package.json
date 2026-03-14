@@ -1,7 +1,7 @@
 {
   "name": "sparkfy-reviewer",
   "displayName": "Sparkfy Reviewer",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "AI Code Review for GitHub and GitLab using Gemini Pro.",
   "author": "LuiznDev",
   "scripts": {
@@ -16,10 +16,12 @@
     "@google/generative-ai": "^0.2.1",
     "@openrouter/ai-sdk-provider": "^2.3.0",
     "@radix-ui/react-accordion": "^1.2.12",
+    "@radix-ui/react-avatar": "^1.1.11",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-popover": "^1.1.15",
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-tooltip": "^1.2.8",
     "ai": "^6.0.116",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

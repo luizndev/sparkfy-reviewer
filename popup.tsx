@@ -12,6 +12,7 @@ import {
 } from "~components/popup/ProviderSelect"
 import { SettingsForms } from "~components/popup/SettingsForms"
 import { ThemeToggle } from "~components/popup/ThemeToggle"
+import { Footer } from "~components/popup/Footer"
 import { Button } from "~components/ui/button"
 import { useLogo } from "~hooks/useLogo"
 import { cn } from "~lib/utils"
@@ -253,9 +254,7 @@ const IndexPopup = () => {
         </div>
       )}
 
-      <div className="px-4 py-3 border-t border-border text-center text-[10px] text-muted-foreground bg-card/50">
-        Sparkfy Reviewer v0.0.2
-      </div>
+      <Footer />
     </div>
   )
 }

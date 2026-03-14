@@ -16,7 +16,7 @@ export const ANTHROPIC_MODELS = [
 
 export const OPENAI_MODELS = [
   "gpt-4o",
-  "gpt-40-mini",
+  "gpt-4o-mini",
   "gpt-4.1",
   "gpt-5",
   "gpt-5-mini",
