@@ -1,174 +1,203 @@
-import { GoogleGenerativeAI } from "@google/generative-ai"
+import { createAnthropic } from "@ai-sdk/anthropic"
+import { createGoogleGenerativeAI } from "@ai-sdk/google"
+import { createOpenAI } from "@ai-sdk/openai"
+import { createOpenRouter } from "@openrouter/ai-sdk-provider"
+import { generateText } from "ai"
 
-export type ProviderType = "gemini" | "openai" | "claude" | "openrouter"
+import { AI_MODELS } from "~/constants/ai-models"
+import { getSystemPrompt, getUserPrompt } from "~constants/prompts"
+
+export type ProviderType = "google" | "openai" | "anthropic" | "openrouter"
+
+export type SupportedLanguages = "pt" | "en" | "es"
 
 export async function reviewCode(
   apiKey: string,
   diff: string,
   instructions: string,
-  provider: ProviderType = "gemini",
-  language: "pt" | "en" | "es" = "pt",
+  provider: ProviderType = "google",
+  language: SupportedLanguages = "pt",
   modelName?: string
 ): Promise<string> {
   const langMap = {
     pt: "Portuguese (Português)",
-    "en": "English",
-    "es": "Spanish (Español)"
+    en: "English",
+    es: "Spanish (Español)"
   }
 
-  const systemPrompt = `
-You are a Senior Staff Software Engineer specialized in JavaScript, TypeScript, React, and Clean Code. 
-Your mindset is focused on high-performance, scalable, and maintainable systems.
+  const systemPrompt = getSystemPrompt(langMap[language], instructions)
+  const userPrompt = getUserPrompt(diff)
 
-CRITICAL: You MUST provide the ENTIRE review in ${langMap[language]}. 
-
-Your job is to analyze code changes and identify improvements based on these CUSTOM RULES:
-"${instructions}"
-
-SENIOR ENGINEER PRIORITIES:
-1. DRY (Don't Repeat Yourself): Suggest abstractions if logic is repeated.
-2. Type Safety: Identify "any" types and suggest strict interfaces/types.
-3. Clean Code: Recommend removing unnecessary comments or logs.
-4. UI Best Practices: Suggest using utilities like 'cn' for conditional classes or interpolations.
-5. Performance & Security: Identify leaks or vulnerabilities.
-
-IMPORTANT REVIEW RULES:
-1. For each file with issues, you MUST wrap the review in: [[FILE: path/to/file]] ... [[END_FILE]]
-2. Inside each file block, you can have multiple issues.
-3. For each issue, provide a SHORT descriptive HEADER.
-4. Explain clearly what must be changed and why (Context, Problem, Solution).
-5. Always suggest a FIXED version of the code snippet.
-6. Only report REAL problems with clear benefits.
-
-OUTPUT FORMAT PER FILE:
-[[FILE: file/path]]
-
-HEADER: <short title for the fix like "Remover comentário", "User 'cn' utility", "Tipagem estrita">
-TYPE: <bug | clean-code | solid | performance | types>
-LINE: <line_number_in_the_new_version_of_the_file>
-
-CONTEXT:
-<brief explanation>
-
-PROBLEM:
-<what's wrong>
-
-SOLUTION:
-<how to fix>
-
-CODE BEFORE:
-\`\`\`ts
-<old code>
-\`\`\`
-
-CODE AFTER (SUGGESTED FIX):
-\`\`\`ts
-<improved code>
-\`\`\`
-
-[[END_FILE]]
-`
-
-  const userPrompt = `
-CODE CHANGES TO REVIEW:
-
-${diff}
-`
-
-  // GEMINI
-  if (provider === "gemini") {
-    const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel({ model: modelName || "gemini-1.5-pro" })
-
+  if (provider === "google") {
     try {
-      const result = await model.generateContent(systemPrompt + "\n\n" + userPrompt)
-      const response = await result.response
-      return response.text()
-    } catch (error: any) {
+      const response = await handleGoogleModelResponse({
+        apiKey,
+        modelName,
+        userPrompt,
+        systemPrompt
+      })
+
+      return response
+    } catch (error) {
       throw new Error(`Gemini Error: ${error.message || "Unknown error"}`)
     }
   }
 
-  // OPENAI
   if (provider === "openai") {
     try {
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model: modelName || "gpt-4-turbo-preview",
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt }
-          ],
-          temperature: 0.2
-        })
+      const response = await handleOpenAIModelResponse({
+        apiKey,
+        modelName,
+        userPrompt,
+        systemPrompt
       })
 
-      const data = await response.json()
-      if (data.error) throw new Error(data.error.message)
-      return data.choices[0].message.content
-    } catch (error: any) {
+      return response
+    } catch (error) {
       throw new Error(`OpenAI Error: ${error.message || "Unknown error"}`)
     }
   }
 
-  // CLAUDE
-  if (provider === "claude") {
+  if (provider === "anthropic") {
     try {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": apiKey,
-          "anthropic-version": "2023-06-01"
-        },
-        body: JSON.stringify({
-          model: modelName || "claude-3-sonnet-20240229",
-          max_tokens: 4096,
-          system: systemPrompt,
-          messages: [{ role: "user", content: userPrompt }]
-        })
+      const response = await handleAnthropicModelResponse({
+        apiKey,
+        modelName,
+        userPrompt,
+        systemPrompt
       })
 
-      const data = await response.json()
-      if (data.error) throw new Error(data.error.message)
-      return data.content[0].text
-    } catch (error: any) {
-      throw new Error(`Claude Error: ${error.message || "Unknown error"}`)
+      return response
+    } catch (error) {
+      throw new Error(`Anthropic Error: ${error.message || "Unknown error"}`)
     }
   }
 
-  // OPENROUTER
   if (provider === "openrouter") {
     try {
-      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-          "HTTP-Referer": "https://sparkfy.com",
-          "X-Title": "Sparkfy Reviewer"
-        },
-        body: JSON.stringify({
-          model: modelName || "meta-llama/llama-3-70b-instruct",
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt }
-          ]
-        })
+      const response = await handleOpenRouterModelResponse({
+        apiKey,
+        modelName,
+        userPrompt,
+        systemPrompt
       })
 
-      const data = await response.json()
-      if (data.error) throw new Error(data.error.message)
-      return data.choices[0].message.content
-    } catch (error: any) {
+      return response
+    } catch (error) {
       throw new Error(`OpenRouter Error: ${error.message || "Unknown error"}`)
     }
   }
 
   throw new Error("Unsupported AI Provider")
+}
+
+interface HandleModelResponseParams {
+  modelName: string
+  userPrompt: string
+  apiKey: string
+  systemPrompt?: string
+}
+
+async function handleGoogleModelResponse({
+  apiKey,
+  modelName,
+  userPrompt,
+  systemPrompt
+}: HandleModelResponseParams) {
+  if (
+    !AI_MODELS.google.includes(modelName as (typeof AI_MODELS.google)[number])
+  ) {
+    throw new Error(`Invalid Google model: ${modelName}`)
+  }
+
+  const google = createGoogleGenerativeAI({
+    apiKey
+  })
+
+  const model = google(modelName)
+
+  const { text } = await generateText({
+    model,
+    system: systemPrompt,
+    prompt: userPrompt
+  })
+
+  return text
+}
+
+async function handleAnthropicModelResponse({
+  apiKey,
+  modelName,
+  userPrompt,
+  systemPrompt
+}: HandleModelResponseParams) {
+  if (
+    !AI_MODELS.anthropic.includes(
+      modelName as (typeof AI_MODELS.anthropic)[number]
+    )
+  ) {
+    throw new Error(`Invalid Anthropic model: ${modelName}`)
+  }
+
+  const anthropic = createAnthropic({
+    apiKey
+  })
+
+  const model = anthropic(modelName)
+
+  const { text } = await generateText({
+    model,
+    system: systemPrompt,
+    prompt: userPrompt
+  })
+
+  return text
+}
+
+async function handleOpenAIModelResponse({
+  apiKey,
+  modelName,
+  userPrompt,
+  systemPrompt
+}: HandleModelResponseParams) {
+  if (
+    !AI_MODELS.openai.includes(modelName as (typeof AI_MODELS.openai)[number])
+  ) {
+    throw new Error(`Invalid OpenAI model: ${modelName}`)
+  }
+
+  const openai = createOpenAI({
+    apiKey
+  })
+
+  const model = openai(modelName)
+
+  const { text } = await generateText({
+    model,
+    system: systemPrompt,
+    prompt: userPrompt
+  })
+
+  return text
+}
+
+async function handleOpenRouterModelResponse({
+  apiKey,
+  modelName,
+  userPrompt,
+  systemPrompt
+}: HandleModelResponseParams) {
+  const openrouter = createOpenRouter({
+    apiKey
+  })
+
+  const model = openrouter(modelName)
+
+  const { text } = await generateText({
+    model,
+    system: systemPrompt,
+    prompt: userPrompt
+  })
+
+  return text
 }

@@ -1,3 +1,5 @@
+import { memo, useEffect, useState } from "react"
+
 import {
   Select,
   SelectContent,
@@ -5,46 +7,47 @@ import {
   SelectTrigger,
   SelectValue
 } from "~components/ui/select"
-import { cn } from "~lib/utils"
+import { AI_MODELS } from "~constants/ai-models"
 
-export const MODELS_BY_PROVIDER = {
-  gemini: [
-    { value: "gemini-1.5-pro", label: "Gemini 1.5 Pro" },
-    { value: "gemini-1.5-flash", label: "Gemini 1.5 Flash" },
-    { value: "gemini-2.0-flash", label: "Gemini 2.0 Flash" }
-  ],
-  openai: [
-    { value: "gpt-4o", label: "GPT-4o" },
-    { value: "gpt-4o-mini", label: "GPT-4o Mini" },
-    { value: "o1-mini", label: "o1 Mini" },
-    { value: "gpt-4-turbo", label: "GPT-4 Turbo" }
-  ],
-  claude: [
-    { value: "claude-3-5-sonnet-20240620", label: "Claude 3.5 Sonnet" },
-    { value: "claude-3-opus-20240229", label: "Claude 3 Opus" },
-    { value: "claude-3-haiku-20240307", label: "Claude 3 Haiku" }
-  ],
-  openrouter: [
-    { value: "meta-llama/llama-3-70b-instruct", label: "Llama 3 70B" },
-    { value: "google/gemini-pro-1.5", label: "Gemini Pro 1.5 (OR)" },
-    { value: "anthropic/claude-3.5-sonnet", label: "Claude 3.5 (OR)" },
-    { value: "mistralai/mistral-large", label: "Mistral Large" }
-  ]
-}
+import { Combobox } from "./combobox"
 
+const { openrouter, ...modelsWithoutOpenRouter } = AI_MODELS
+export const MODELS_BY_PROVIDER = modelsWithoutOpenRouter
 interface ModelSelectProps {
-  provider: keyof typeof MODELS_BY_PROVIDER
+  provider: keyof typeof AI_MODELS
   value: string
   onChange: (value: string) => void
   label: string
 }
 
 export const ModelSelect = ({
-  provider,
+  provider = "google",
   value,
   onChange,
   label
 }: ModelSelectProps) => {
+  const [openRouterModels, setOpenRouterModels] = useState<string[]>([])
+
+  async function fetchOpenRouterModels() {
+    const response = await openrouter()
+    setOpenRouterModels(response)
+  }
+
+  useEffect(() => {
+    fetchOpenRouterModels()
+  }, [])
+
+  if (provider == "openrouter") {
+    return (
+      <OpenRouterModelSelect
+        value={value}
+        onChange={onChange}
+        label={label}
+        models={openRouterModels}
+      />
+    )
+  }
+
   const models = MODELS_BY_PROVIDER[provider] || []
 
   return (
@@ -54,15 +57,15 @@ export const ModelSelect = ({
       </span>
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger className="w-full bg-muted/50 border-border rounded-md px-3 py-2 text-[12px] font-medium outline-none h-10 shadow-none">
-          <SelectValue placeholder="Select Model" />
+          <SelectValue placeholder="Select a Model..." />
         </SelectTrigger>
         <SelectContent className="bg-muted/50 border-border border backdrop-blur-md">
-          {models.map((m) => (
+          {models.map((model) => (
             <SelectItem
-              key={m.value}
-              value={m.value}
+              key={model}
+              value={model}
               className="text-[12px] cursor-pointer">
-              {m.label}
+              {model}
             </SelectItem>
           ))}
         </SelectContent>
@@ -70,3 +73,26 @@ export const ModelSelect = ({
     </div>
   )
 }
+
+interface OpenRouterModelSelectProps
+  extends Omit<ModelSelectProps, "provider"> {
+  models: string[]
+}
+
+const OpenRouterModelSelect = memo(
+  ({ value, onChange, label, models }: OpenRouterModelSelectProps) => {
+    return (
+      <div className="flex flex-col space-y-1.5">
+        <span className="text-[11px] uppercase tracking-wider text-muted-foreground">
+          {label}
+        </span>
+        <Combobox
+          items={models}
+          value={value}
+          onChange={onChange}
+          placeholder="Select a model..."
+        />
+      </div>
+    )
+  }
+)

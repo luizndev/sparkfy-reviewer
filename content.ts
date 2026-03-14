@@ -1,7 +1,8 @@
 import type { PlasmoCSConfig } from "plasmo"
+
+import { injectReviewBox } from "~components/injectors/reviewBox"
 import { getGitHubDiff } from "~components/scrapers/github"
 import { getGitLabDiff } from "~components/scrapers/gitlab"
-import { injectReviewBox } from "~components/injectors/reviewBox"
 
 export const config: PlasmoCSConfig = {
   matches: [
@@ -9,7 +10,6 @@ export const config: PlasmoCSConfig = {
     "https://gitlab.com/*/-/merge_requests/*"
   ]
 }
-
 
 const injectTriggerButton = (): void => {
   if (document.getElementById("sparkfy-trigger-btn")) return
@@ -62,63 +62,89 @@ const injectTriggerButton = (): void => {
 
 const startAIReview = (): void => {
   if (!chrome.runtime?.id) {
-    alert("Extension context invalidated. Please refresh the page (F5) to continue using Sparkfy Reviewer.")
+    alert(
+      "Extension context invalidated. Please refresh the page (F5) to continue using Sparkfy Reviewer."
+    )
     return
   }
 
-  chrome.storage.local.get(["aiProvider", "apiKeys", "apiModels", "reviewInstructions", "language"], (result) => {
-    const { aiProvider = "gemini", apiKeys = {}, apiModels = {}, reviewInstructions, language = "pt" } = result
-    const apiKey = apiKeys[aiProvider]
-    const modelName = apiModels[aiProvider]
+  chrome.storage.local.get(
+    ["aiProvider", "apiKeys", "apiModels", "reviewInstructions", "language"],
+    (result) => {
+      const {
+        aiProvider = "google",
+        apiKeys = {},
+        apiModels = {},
+        reviewInstructions,
+        language = "pt"
+      } = result
+      const apiKey = apiKeys[aiProvider]
+      const modelName = apiModels[aiProvider]
 
-    if (!apiKey) {
-      alert(`Please set your ${aiProvider.toUpperCase()} API Key in the Sparkfy Reviewer extension popup.`)
-      return
-    }
-
-    const diff = window.location.href.includes("gitlab.com") ? getGitLabDiff() : getGitHubDiff()
-
-    if (!diff || diff.length < 10) {
-      alert("No code changes detected to review.")
-      return
-    }
-
-    const finalInstructions = reviewInstructions || "Analyze the code for Clean Code, SOLID, Typescript Strict, Security and Performance."
-
-    injectReviewBox("Analyzing code changes with " + aiProvider + "...", true)
-
-    chrome.runtime.sendMessage(
-      {
-        type: "RUN_REVIEW",
-        payload: {
-          diff,
-          apiKey,
-          instructions: finalInstructions,
-          provider: aiProvider,
-          language,
-          modelName
-        }
-      },
-      (response) => {
-
-        if (chrome.runtime.lastError) {
-          console.error("Sparkfy Reviewer: Runtime error from background:", chrome.runtime.lastError)
-          injectReviewBox("Error: Extension communication failed. Please refresh (F5).")
-          return
-        }
-
-        if (response && response.success) {
-          injectReviewBox(response.review)
-        } else {
-          injectReviewBox("AI Review failed: " + (response?.error || "Unknown error"))
-        }
+      if (!apiKey) {
+        alert(
+          `Please set your ${aiProvider.toUpperCase()} API Key in the Sparkfy Reviewer extension popup.`
+        )
+        return
       }
-    )
-  })
+
+      const diff = window.location.href.includes("gitlab.com")
+        ? getGitLabDiff()
+        : getGitHubDiff()
+
+      if (!diff || diff.length < 10) {
+        alert("No code changes detected to review.")
+        return
+      }
+
+      const finalInstructions =
+        reviewInstructions ||
+        "Analyze the code for Clean Code, SOLID, Typescript Strict, Security and Performance."
+
+      injectReviewBox("Analyzing code changes with " + aiProvider + "...", true)
+
+      chrome.runtime.sendMessage(
+        {
+          type: "RUN_REVIEW",
+          payload: {
+            diff,
+            apiKey,
+            instructions: finalInstructions,
+            provider: aiProvider,
+            language,
+            modelName
+          }
+        },
+        (response) => {
+          if (chrome.runtime.lastError) {
+            console.error(
+              "Sparkfy Reviewer: Runtime error from background:",
+              chrome.runtime.lastError
+            )
+            injectReviewBox(
+              "Error: Extension communication failed. Please refresh (F5)."
+            )
+            return
+          }
+
+          if (response && response.success) {
+            injectReviewBox(response.review)
+          } else {
+            injectReviewBox(
+              "AI Review failed: " + (response?.error || "Unknown error")
+            )
+          }
+        }
+      )
+    }
+  )
 }
 
 const observer = new MutationObserver(() => {
-  if (window.location.href.includes("/pull/") || window.location.href.includes("/merge_requests/")) {
+  if (
+    window.location.href.includes("/pull/") ||
+    window.location.href.includes("/merge_requests/")
+  ) {
     injectTriggerButton()
   }
 })
@@ -132,6 +158,3 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 observer.observe(document.body, { childList: true, subtree: true })
 injectTriggerButton()
-
-
-
