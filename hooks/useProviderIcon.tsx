@@ -1,9 +1,8 @@
-import { BsClaude, BsOpenai } from "react-icons/bs"
-import { RiGeminiFill } from "react-icons/ri"
+import { BsAnthropic, BsGoogle, BsOpenai } from "react-icons/bs"
 
-import { cn } from "~lib/utils"
+import { AI_PROVIDERS } from "~constants/ai-providers"
 
-export type ProviderIconName = "gemini" | "openai" | "claude" | "openrouter"
+export type ProviderIconName = (typeof AI_PROVIDERS)[number]["value"]
 
 const OpenRouterIcon = ({ className }: { className?: string }) => (
   <svg
@@ -30,12 +29,12 @@ const OpenRouterIcon = ({ className }: { className?: string }) => (
 export const useProviderIcon = (name: ProviderIconName) => {
   const getIcon = (className?: string) => {
     switch (name) {
-      case "gemini":
-        return <RiGeminiFill className={className} />
+      case "google":
+        return <BsGoogle className={className} />
       case "openai":
         return <BsOpenai className={className} />
-      case "claude":
-        return <BsClaude className={className} />
+      case "anthropic":
+        return <BsAnthropic className={className} />
       case "openrouter":
         return <OpenRouterIcon className={className} />
       default:
