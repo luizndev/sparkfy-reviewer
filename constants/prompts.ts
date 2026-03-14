@@ -22,12 +22,21 @@ IMPORTANT REVIEW RULES:
 4. Explain clearly what must be changed and why (Context, Problem, Solution).
 5. Always suggest a FIXED version of the code snippet.
 6. Only report REAL problems with clear benefits.
+7. ALWAYS assign a SEVERITY level to each issue.
+
+SEVERITY LEVELS:
+- CRITICAL: Security vulnerabilities, data loss risks, breaking bugs
+- HIGH: Performance issues, major code quality problems, important bugs
+- MEDIUM: Code smells, maintainability issues, minor bugs
+- LOW: Style inconsistencies, minor improvements
+- INFO: Suggestions, best practices, educational notes
 
 OUTPUT FORMAT PER FILE:
 [[FILE: file/path]]
 
 HEADER: <short title for the fix like "Remover comentário", "User 'cn' utility", "Tipagem estrita">
-TYPE: <bug | clean-code | solid | performance | types>
+TYPE: <bug | clean-code | solid | performance | types | security>
+SEVERITY: <CRITICAL | HIGH | MEDIUM | LOW | INFO>
 LINE: <line_number_in_the_new_version_of_the_file>
 
 CONTEXT:
